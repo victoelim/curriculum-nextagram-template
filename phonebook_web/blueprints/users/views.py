@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, redirect, url_for
+from models.user import User
 
 
 users_blueprint = Blueprint('users',
@@ -13,24 +14,11 @@ def new():
 
 @users_blueprint.route('/', methods=['POST'])
 def create():
-    pass
+    name = request.form.get('name')
+    number = request.form.get('number')
+    user = User(name = name, number = number)
 
-
-@users_blueprint.route('/<username>', methods=["GET"])
-def show(username):
-    pass
-
-
-@users_blueprint.route('/', methods=["GET"])
-def index():
-    return "USERS"
-
-
-@users_blueprint.route('/<id>/edit', methods=['GET'])
-def edit(id):
-    pass
-
-
-@users_blueprint.route('/<id>', methods=['POST'])
-def update(id):
-    pass
+    if user.save():
+        return redirect(url_for('users.new'))
+    else: 
+        return "Something went wrong. Please try again."
